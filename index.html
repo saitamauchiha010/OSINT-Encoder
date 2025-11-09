@@ -1,130 +1,212 @@
-<!doctype html>
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OSINT-ENCODER — Encoder & Decoder</title>
   <style>
-    :root{
-      --bg:#2b2b46;
-      --card:#282742;
-      --accent:#04d9d9;
-      --teal:#00bcd4;
-      --green:#34a853;
-      --blue:#2196f3;
-      --yellow:#f2c94c;
-      --muted:#9aa3c1;
-      --input-border:#16b6c6;
-      --radius:12px;
-      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    body {
+      margin: 0;
+      background: #0f0f23;
+      color: #e0e0ff;
+      font-family: "Segoe UI", sans-serif;
     }
-    html,body{height:100%;margin:0;background:linear-gradient(180deg,#1f1f33 0%, #27253b 100%);color:#eaf0ff}
-    .wrap{max-width:430px;margin:28px auto;padding:24px;border-radius:18px;background:linear-gradient(180deg,#2f2a4a,#26243a);box-shadow:0 8px 30px rgba(0,0,0,0.6)}
-    h1{margin:0;font-size:36px;letter-spacing:2px;color:var(--accent);text-align:center}
-    .sub{color:var(--muted);text-align:center;margin-top:6px;font-size:13px}
-    label{display:block;margin-top:18px;color:#cfe9f0;font-size:14px}
-    textarea{width:100%;min-height:120px;padding:14px;border-radius:12px;background:#2f2f46;border:2px solid var(--input-border);color:#eaf0ff;resize:none;font-family:monospace;font-size:15px;box-sizing:border-box}
-    .controls{display:flex;gap:16px;margin-top:14px}
-    .btn{flex:1;padding:12px 14px;border-radius:10px;border:none;font-weight:700;font-size:16px;cursor:pointer}
-    .btn-encode{background:linear-gradient(180deg,var(--green),#2f8b46);color:#fff}
-    .btn-decode{background:linear-gradient(180deg,var(--blue),#1776d6);color:#fff}
-    .result{margin-top:18px}
-    .result-box{width:100%;border-radius:12px;padding:14px;min-height:120px;height:120px;border:2px solid var(--yellow);background:#2f2f46;font-family:monospace;color:#eaf0ff;white-space:pre-wrap;box-sizing:border-box;overflow-y:auto}
-    .result-buttons{display:flex;justify-content:center;gap:16px;margin-top:10px}
-    .info{margin-top:18px;padding:14px;border-radius:12px;border:1px dashed rgba(160,200,220,0.08);background:linear-gradient(180deg,rgba(0,0,0,0.18),transparent)}
-    .show-map{display:block;margin-top:10px;color:var(--teal);cursor:pointer;font-weight:700}
-    .mapping{margin-top:10px;background:rgba(0,0,0,0.18);padding:10px;border-radius:8px;font-family:monospace;overflow:auto;max-height:160px}
-    .bottom{font-size:12px;color:var(--muted);text-align:center;margin-top:16px}
-    .small{font-size:13px;color:var(--muted)}
-    .copy-btn{padding:8px 16px;border-radius:8px;border:none;background:rgba(255,255,255,0.04);color:var(--teal);cursor:pointer;font-weight:600}
-    @media (max-width:480px){.wrap{margin:12px;padding:16px}h1{font-size:30px}}
+    .container {
+      max-width: 450px;
+      margin: 40px auto;
+      background: #1c1c3a;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 0 25px rgba(0, 255, 255, 0.15);
+    }
+    h1 {
+      text-align: center;
+      color: #00e0ff;
+      font-size: 28px;
+      margin-bottom: 5px;
+      letter-spacing: 1px;
+    }
+    h2 {
+      text-align: center;
+      color: #9aa3c1;
+      font-size: 14px;
+      margin-top: 0;
+      font-weight: 500;
+    }
+    label {
+      display: block;
+      margin: 15px 0 6px;
+      font-size: 14px;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      background: #161633;
+      border: 2px solid #00bcd4;
+      border-radius: 10px;
+      color: #fff;
+      padding: 10px;
+      resize: none;
+      font-family: monospace;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
+    .buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .encode {
+      background: linear-gradient(180deg, #34a853, #207a3d);
+    }
+    .decode {
+      background: linear-gradient(180deg, #2196f3, #1666c4);
+    }
+    .encode:hover {
+      background: #2e8b57;
+    }
+    .decode:hover {
+      background: #1976d2;
+    }
+    .result {
+      margin-top: 15px;
+    }
+    .result-box {
+      background: #161633;
+      border: 2px solid #f2c94c;
+      border-radius: 10px;
+      padding: 10px;
+      min-height: 80px;
+      white-space: pre-wrap;
+      overflow-y: auto;
+      font-family: monospace;
+      color: #fff;
+    }
+    .copy-clear {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 10px;
+    }
+    .copy-clear button {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid #00e0ff;
+      color: #00e0ff;
+      padding: 7px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .info {
+      margin-top: 20px;
+      background: #14142d;
+      border-radius: 10px;
+      padding: 15px;
+      font-size: 13px;
+      color: #c0c8e0;
+      border: 1px dashed #00bcd4;
+    }
+    .info strong {
+      color: #00e0ff;
+    }
+    .bottom {
+      text-align: center;
+      color: #888;
+      margin-top: 15px;
+      font-size: 12px;
+    }
   </style>
 </head>
 <body>
-  <div class="wrap" role="main">
+  <div class="container">
     <h1>OSINT-ENCODER</h1>
-    <div class="sub">Professional ENCODER & DECODER</div><label for="inp">Input Text (Plaintext or Cipher):</label>
-<textarea id="inp" placeholder="Type or paste text here..."></textarea>
+    <h2>Professional ENCODER & DECODER</h2>
 
-<div class="controls">
-  <button id="enc" class="btn btn-encode">ENCODE</button>
-  <button id="dec" class="btn btn-decode">DECODE</button>
-</div>
+    <label for="input">Input Text (Plaintext or Cipher):</label>
+    <textarea id="input" placeholder="Type or paste text here..."></textarea>
 
-<div class="result">
-  <label>Result:</label>
-  <div id="out" class="result-box" aria-live="polite"></div>
-  <div class="result-buttons">
-    <button id="copy" class="copy-btn">Copy</button>
-    <button id="clear" class="copy-btn">Clear</button>
+    <div class="buttons">
+      <button class="encode" id="encode">ENCODE</button>
+      <button class="decode" id="decode">DECODE</button>
+    </div>
+
+    <div class="result">
+      <label>Result:</label>
+      <div class="result-box" id="output"></div>
+      <div class="copy-clear">
+        <button id="copy">Copy</button>
+        <button id="clear">Clear</button>
+      </div>
+    </div>
+
+    <div class="info">
+      <strong>Cipher Info:</strong> Converts text to and from <b>Morse Code</b>.<br />
+      Use <code>/</code> for spaces between words.
+    </div>
+
+    <div class="bottom">
+      © 2025 Siee1234 Latest Encoder And Decoder.
+    </div>
   </div>
-</div>
 
-<div class="info">
-  <div style="font-weight:700;color:var(--teal)">Cipher Info:</div>
-  <div class="small">Mapped characters include A-Z, a-z, and 0-9 (62 total). Other characters are passed through unchanged.</div>
-  <button id="showMap" class="show-map">► Show Mapping Sample</button>
-  <div id="map" class="mapping" style="display:none"></div>
-</div>
-
-<div class="bottom">Copyright © Siee1234 Latest Encoder And Decoder.</div>
-
-  </div>  <script>
-    const customMap = {
-      'A':'◉','B':'⊗','C':'◍','D':'◔','E':'◕','F':'◎','G':'◩','H':'◪','I':'◫','J':'◬','K':'◭','L':'◮','M':'◯','N':'◰','O':'◱','P':'◲','Q':'◳','R':'◴','S':'◵','T':'◶','U':'◷','V':'◸','W':'◹','X':'◺','Y':'◻','Z':'◼',
-      'a':'⚀','b':'⚁','c':'⚂','d':'⚃','e':'⚄','f':'⚅','g':'✪','h':'✰','i':'✷','j':'✸','k':'✹','l':'✺','m':'✻','n':'✼','o':'✽','p':'✾','q':'✿','r':'❀','s':'❁','t':'❂','u':'❃','v':'❄','w':'❅','x':'❆','y':'❇','z':'❈',
-      '0':'①','1':'②','2':'③','3':'④','4':'⑤','5':'⑥','6':'⑦','7':'⑧','8':'⑨','9':'⑩'
+  <script>
+    const morseMap = {
+      'A': '.-','B': '-...','C': '-.-.','D': '-..','E': '.','F': '..-.','G': '--.','H': '....','I': '..','J': '.---',
+      'K': '-.-','L': '.-..','M': '--','N': '-.','O': '---','P': '.--.','Q': '--.-','R': '.-.','S': '...','T': '-',
+      'U': '..-','V': '...-','W': '.--','X': '-..-','Y': '-.--','Z': '--..',
+      '0': '-----','1': '.----','2': '..---','3': '...--','4': '....-','5': '.....',
+      '6': '-....','7': '--...','8': '---..','9': '----.'
     };
 
-    const reverseMap = Object.fromEntries(Object.entries(customMap).map(([k,v])=>[v,k]));
+    const reverseMorse = Object.fromEntries(Object.entries(morseMap).map(([k,v]) => [v, k]));
 
-    function encodeText(text){
-      return [...text].map(ch=>customMap[ch]||ch).join('');
+    function encodeText(text) {
+      return [...text.toUpperCase()].map(ch => {
+        if (ch === ' ') return '/';
+        return morseMap[ch] || ch;
+      }).join(' ');
     }
 
-    function decodeText(text){
-      return [...text].map(ch=>reverseMap[ch]||ch).join('');
+    function decodeText(text) {
+      return text.split(' ').map(token => {
+        if (token === '/') return ' ';
+        return reverseMorse[token] || token;
+      }).join('');
     }
 
-    const inp = document.getElementById('inp');
-    const out = document.getElementById('out');
+    const input = document.getElementById('input');
+    const output = document.getElementById('output');
 
-    document.getElementById('enc').addEventListener('click', ()=>{
-      out.textContent = encodeText(inp.value);
+    document.getElementById('encode').addEventListener('click', () => {
+      output.textContent = encodeText(input.value);
     });
 
-    document.getElementById('dec').addEventListener('click', ()=>{
-      out.textContent = decodeText(inp.value);
+    document.getElementById('decode').addEventListener('click', () => {
+      output.textContent = decodeText(input.value);
     });
 
-    document.getElementById('copy').addEventListener('click', ()=>{
-      const text = out.textContent || '';
-      if (!text) return alert('Result empty');
-      navigator.clipboard?.writeText(text).then(()=>{
-        alert('Copied to clipboard');
-      }).catch(()=>{ prompt('Copy manually:', text); });
+    document.getElementById('copy').addEventListener('click', () => {
+      const text = output.textContent.trim();
+      if (!text) return alert('Nothing to copy!');
+      navigator.clipboard.writeText(text);
+      alert('Copied!');
     });
 
-    document.getElementById('clear').addEventListener('click', ()=>{ inp.value=''; out.textContent=''; });
-
-    const mapDiv = document.getElementById('map');
-    const showBtn = document.getElementById('showMap');
-
-    showBtn.addEventListener('click', ()=>{
-      if (mapDiv.style.display==='none'){
-        let html='';
-        html += 'Mapping Table (A-Z, a-z, 0-9):\n\n';
-        for (const [k,v] of Object.entries(customMap)){
-          html += `${k} → ${v}\n`;
-        }
-        mapDiv.textContent = html;
-        mapDiv.style.display='block';
-        showBtn.textContent='▼ Hide Mapping Sample';
-      } else {
-        mapDiv.style.display='none';
-        showBtn.textContent='► Show Mapping Sample';
-      }
+    document.getElementById('clear').addEventListener('click', () => {
+      input.value = '';
+      output.textContent = '';
     });
-  </script></body>
+  </script>
+</body>
 </html>
